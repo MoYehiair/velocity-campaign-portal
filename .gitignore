@@ -40,3 +40,4 @@ next-env.d.ts
 /data/
 /secrets/
 /test-results/
+*.tsbuildinfo

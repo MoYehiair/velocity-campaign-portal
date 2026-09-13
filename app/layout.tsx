@@ -14,7 +14,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: 'Velocity | Campaign Portal',
-  description: 'A secure workspace for your brand’s contacts, campaigns, and results.',
+  description:
+    'A secure workspace for your brand’s contacts, campaigns, and results.',
 };
 
 export default function RootLayout({
