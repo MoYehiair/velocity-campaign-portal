@@ -24,6 +24,10 @@ Administrative operations and sharing projections use a server-only service-role
 
 Default privileges revoke new table access and function execution from public client roles. Enable Supabase's automatic RLS project setting as a second safeguard. The regression suite explicitly disables RLS and verifies that the cross-tenant read assertion fails, then restores it.
 
+## Query performance
+
+The `contact_eligibility` security-invoker view evaluates identity and destination suppressions as sets while retaining the caller’s underlying RLS. Dashboard aggregates and approval preparation reuse it, avoiding a separate suppression function call for every contact. Signup filtering uses tenant-timezone calendar boundaries and an indexable timestamp range. Regression tests compare its channel decisions with the original eligibility function and verify cross-tenant isolation.
+
 ## Import policy
 
 The source filename determines the tenant; row-level brand labels are checked against it. A mismatched brand is quarantined, never reassigned. Supported formats are explicit: Kilele UTF-8 comma-separated files, Karoo UTF-8 or Windows-1252 files with header normalization, and Marrakech semicolon-separated files with documented header aliases and decimal commas.

@@ -40,6 +40,14 @@ Do not mark a check complete without observing the result. Automated local tests
 - Exercise loading, empty, denied, and failed states at phone and laptop widths, including keyboard focus and modal dismissal.
 - Run a request against the production Worker, and verify an authenticated database query and a provider event page there.
 
-## Known setup dependencies
+## Observed live results — 14 September 2026 (UTC)
 
-Hosted Supabase credentials, the user's real Google identity and OAuth client, production environment variables, the scheduler, and live evaluation logins must be configured before claiming the brief is complete.
+- All six password accounts authenticated against hosted Supabase. Direct public-key/JWT queries returned no foreign-tenant contacts; report-secret and worker access were denied. Analyst preview creation was denied.
+- Google sign-in completed in the public portal as the Kilele owner. The existing password user has both email and Google identities; the dashboard showed 82,107 customers and 36,177 contactable customers.
+- All eleven supplied files completed import. Final customer counts: Kilele 82,107, Karoo 12,406, Marrakech 918. Historical event counts: 303,588, 69,100, and 307 respectively. The independent full-seed Postgres verification matched these counts.
+- Two concurrent authenticated confirmations returned the same Marrakech MAR-0006 send job. Its 327 supplied synthetic email destinations were accepted in 14 batches. After later polling: 309 delivered, 18 bounced, 100 opened, 14 unsubscribed; no remaining polling errors. Unrelated recipient reports were quarantined.
+- Report route integration verified the password gate, wrong-password denial, aggregate-only output, report-specific cookies, cross-report denial, and revocation. The deployed public endpoint separately passed unauthorized, password unlock, and aggregate reads.
+- The deployed worker endpoint returned HTTP 200. Supabase Cron is active every minute; `net._http_response` recorded HTTP 200, no timeout, and `{ "dispatched": 0, "pages": 10 }` at 21:45 UTC, proving a scheduled HTTP invocation reached the live application.
+- Type checking, lint, and all 23 tests passed. The eligibility performance migration preserves RLS and matches the original channel decisions in the regression suite.
+
+The checklist above remains a reusable acceptance plan, not a claim that every adversarial scenario was reproduced on the live provider. Crash recovery, stale consent, malformed acknowledgements, and RLS-off regression are automated Postgres/domain tests. Live provider timeout/partial-acceptance guarantees and an unlisted Google login were not independently exercised. Signups are disabled and unlisted identity access is covered by database tests.

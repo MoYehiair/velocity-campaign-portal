@@ -483,3 +483,35 @@ void test('new tables and functions are inaccessible by default', async () => {
     /permission denied/,
   );
 });
+
+void test('set-based eligibility preserves channel decisions and applies caller RLS', async () => {
+  await identity(owner);
+  const rows = (
+    await db.query<{
+      tenant_id: string;
+      email_contactable: boolean;
+      sms_contactable: boolean;
+      expected_email: boolean;
+      expected_sms: boolean;
+    }>(`
+    select e.tenant_id, e.email_contactable, e.sms_contactable,
+      public.is_contactable(c, 'email') as expected_email,
+      public.is_contactable(c, 'sms') as expected_sms
+    from public.contact_eligibility e
+    join public.contacts c using(tenant_id, external_id)
+  `)
+  ).rows;
+  assert.ok(rows.length > 0);
+  for (const row of rows) {
+    assert.equal(row.tenant_id, 'kilele');
+    assert.equal(row.email_contactable, row.expected_email);
+    assert.equal(row.sms_contactable, row.expected_sms);
+  }
+  await identity(other);
+  assert.equal(
+    await scalar<number>(
+      "select count(*)::int as value from public.contact_eligibility where tenant_id='kilele'",
+    ),
+    0,
+  );
+});

@@ -12,10 +12,16 @@ Public docs: https://dispatcher-production-72fc.up.railway.app/v1/docs
 - Replaying the exact one-recipient request with the same idempotency key several hours later returned the original batch ID and an accepted count of one. This verifies that example, not an unlimited retention guarantee.
 - The terminal response returned `next_cursor: null` and `has_more: false`.
 
-Local raw probe records are ignored under `work/`. They contain no provider key. The one-recipient integration probe is separate from the portal's eventual campaign send and is not represented as an approved campaign.
+Local raw probe records are ignored under `work/`. They contain no provider key. The one-recipient probe is separate from the approved campaign and is not represented as an approved campaign.
 
 ## Do not infer from the docs
 
 The docs claim clean, ordered, exactly-once reports. The observed duplicates and unrelated event contradict that claim. The brief also explicitly warns about messy and out-of-order reports.
 
 The advertised 100,000-recipient limit and 600 requests/minute have not been stress-tested. The application uses conservative 25-recipient batches and bounded worker invocations. Idempotency lifetime, partial-acceptance behavior at scale, and timeout recovery must be verified against the live service before claiming end-to-end acceptance. Unit tests cover malformed/incomplete acknowledgements and event handling, not undocumented provider guarantees.
+
+## Approved campaign test
+
+MAR-0006 was confirmed concurrently through two authenticated calls; both returned one job. The worker sent its immutable 327-recipient synthetic email snapshot in 14 batches. All were accepted. Subsequent polls recorded 309 delivered, 18 bounced, 100 opened, and 14 unsubscribed events. Unrelated recipient events were quarantined.
+
+Early event pages temporarily repeated a nonterminal cursor. The worker recorded the stalled cursor visibly, retained its durable position, and recovered on a later sweep when events became available. All batch polling errors cleared. The production worker and Supabase Cron each returned HTTP 200 while processing ten event pages. Accepted counts are provider acknowledgements; they are not delivery counts.

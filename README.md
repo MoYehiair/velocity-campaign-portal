@@ -15,6 +15,8 @@ npm run dev
 
 Open the local URL printed by the development server. Without Supabase configuration, sign-in reports that the workspace is not connected; the app never substitutes fabricated customer data.
 
+Live application: https://velocity-campaign-portal.icewoman.chatgpt.site
+
 ## Supabase setup
 
 1. Create a dedicated project. Keep Data API enabled, disable automatically exposing new tables, and enable automatic RLS.
@@ -73,7 +75,7 @@ npm run verify:seed
 npm run build
 ```
 
-`npm test` runs the real schema in PGlite/Postgres and pure domain tests without any network credentials. The isolation regression test demonstrates failure when RLS is disabled. `npm run verify:seed` exercises all supplied CSVs through the real SQL importer and writes a private local summary under `work/`. Hosted Supabase/OAuth, concurrent external sessions, the deployed runtime, and the scheduled worker still require the live checks in `docs/acceptance.md`.
+`npm test` runs the real schema in PGlite/Postgres and pure domain tests without any network credentials. The isolation regression test demonstrates failure when RLS is disabled. `npm run verify:seed` exercises all supplied CSVs through the real SQL importer and writes a private local summary under `work/`. Observed hosted Supabase, Google login, concurrent confirmation, production report, and scheduled-worker results are recorded separately in `docs/acceptance.md`.
 
 ## Deployment
 
