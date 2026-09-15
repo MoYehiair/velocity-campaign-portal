@@ -14,6 +14,9 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: 'Velocity | Campaign Portal',
+  icons: {
+    icon: { url: '/favicon.svg', type: 'image/svg+xml' },
+  },
   description:
     'A secure workspace for your brand’s contacts, campaigns, and results.',
 };
