@@ -51,3 +51,29 @@ Do not mark a check complete without observing the result. Automated local tests
 - Type checking, lint, and all 23 tests passed. The eligibility performance migration preserves RLS and matches the original channel decisions in the regression suite.
 
 The checklist above remains a reusable acceptance plan, not a claim that every adversarial scenario was reproduced on the live provider. Crash recovery, stale consent, malformed acknowledgements, and RLS-off regression are automated Postgres/domain tests. Live provider timeout/partial-acceptance guarantees and an unlisted Google login were not independently exercised. Signups are disabled and unlisted identity access is covered by database tests.
+
+
+## Final verification — 15 September 2026
+
+No emails or campaigns were sent during this verification. Google account changes remain excluded pending the recruiter's reply.
+
+- All 31 automated tests passed, including six real-worker simulations using a local database and a provider stub: timeout after acceptance, crash before saving the response, throttling, partial acceptance, malformed acknowledgement, and permanent rejection. Retry cases preserve the original payload and idempotency key. These establish application recovery behavior, not the external provider's delivery guarantee.
+- Two independent PostgreSQL sessions raced both the same approval and different approvals for one campaign. The test observed the second transaction waiting on a database lock; only one send job survived each race. Run `node scripts/verify-concurrency.mjs` with the optional embedded PostgreSQL runtime below.
+- All eleven supplied files were imported and replayed through the real SQL importer in native PostgreSQL. Complete contact, campaign, event, and historical-send fingerprints remained identical, including replay of the old contact baseline after the delta. Private evidence: `work/seed-verification.json`.
+- Report route tests cover expired sessions, rate limiting, successful access after the rate window, and revocation. Existing tests cover cross-report scope and aggregate-only access.
+- Dashboard boundary tests cover all three tenant timezones, both edges of the 30-day window, unknown dates, deleted contacts, and an out-of-range contact page.
+- All six hosted password accounts passed direct cross-tenant checks across 14 tenant tables, dashboard reads, first/final contact pages, and empty searches. Kilele's final page returned seven records at page index 1642. Private evidence: `work/final-live-readonly.json`. Its legacy `lastPageMs` measurement includes the subsequent empty search; the script now names this measurement accurately.
+- The large-brand final-page check exposed a timeout. Migration 008 now limits the page before computing contact eligibility. Migration 009 disables dashboard JIT compilation overhead. Both were applied to hosted Supabase; tenant policies and query results remain unchanged.
+- Browser checks covered analyst navigation, loading and empty contact states, mobile sidebar dismissal, historical campaign results, and import history. A mobile tab orientation bug was fixed and visually checked at 390 × 844.
+
+### Reproduce optional native database checks
+
+Install the isolated runtime outside the repository:
+
+```sh
+npm install --prefix /tmp/velocity-postgres-test embedded-postgres@18.4.0-beta.17 pg
+node scripts/verify-concurrency.mjs
+TEST_NATIVE_PG=1 npm run verify:seed
+```
+
+The scripts create temporary local databases and never invoke the live messaging provider. The full replay can take several minutes. Default `npm run verify:seed` uses PGlite and is slower. Tests are simulations plus the explicitly listed live checks; they do not claim every failure was reproduced against the live provider.
