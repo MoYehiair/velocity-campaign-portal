@@ -1,4 +1,4 @@
-# Submission note (draft, under 300 words)
+# Submission note (under 300 words; Google access pending)
 
 I built the portal with React/TypeScript and Supabase Auth/Postgres. Ordinary portal reads use the public key plus the signed-in user’s JWT. Privileged keys stay on the server.
 
@@ -10,4 +10,6 @@ My least certain metric is historical unique engagement. MAR-0006 reports 129 op
 
 Provider timeout/partial-acceptance guarantees were not independently proven live; defensive recovery is covered by automated tests. An unlisted Google identity was not exercised live; signups are disabled and database denial is tested.
 
-AI assistance: Codex. Development began 13 September 2026. Actual effort, earliest employment start date, and notice period must be filled in by the applicant before submission.
+Google access for the other five users remains pending; I have asked the recruiter for Google accounts and am awaiting a reply. All six password accounts work.
+
+AI assistance: Codex. Development began 13 September 2026.

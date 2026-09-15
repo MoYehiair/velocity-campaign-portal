@@ -112,7 +112,7 @@ export default function Report({
                 autoComplete="current-password"
               />
             </label>
-            <Button className="primary" disabled={busy}>
+            <Button type="submit" className="primary" disabled={busy}>
               {busy ? 'Opening…' : 'View results'}
             </Button>
           </form>

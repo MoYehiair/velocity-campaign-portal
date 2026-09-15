@@ -26,3 +26,13 @@ Draft only after the live checks. Include:
 4. Anything unfinished or not independently verified. Do not say Google, Cron, deployment, or live concurrency works until observed.
 
 Do not attach private .env files, service keys, OAuth secrets, or a credentials JSON file to the public repository.
+
+## Handoff preparation — 15 September 2026
+
+- Private email draft assembled in ignored `secrets/submission-email-draft.md`; no email sent.
+- Public repository is reachable, contains README.md and schema.sql, and matched local commit `49dcaad` at verification time.
+- Live app and report page returned HTTP 200. All six password logins returned their expected brand and role through the deployed membership endpoint.
+- Existing report rejected missing/wrong passwords with HTTP 401 and returned campaign aggregates after correct-password authentication. The report session cookie included HttpOnly and Secure.
+- Google access for five users remains pending the recruiter’s reply; Kilele owner Google sign-in was previously demonstrated.
+- Remaining applicant input: actual hands-on hours, earliest employment start date, and notice period.
+- No campaigns were sent during this handoff check. No new full browser or campaign-send test was performed.
